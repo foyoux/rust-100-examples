@@ -1,0 +1,107 @@
+[package]
+name = "example-057"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+# Make sure docs are always generated with the "unstable" feature activated
+[package.metadata.docs.rs]
+features = ["unstable"]
+
+[badges]
+# Azure DevOps: `project` is required. `pipeline` is required. `build` is optional; default is `1`
+# Note: project = `organization/project`, pipeline = `name_of_pipeline`, build = `definitionId`
+azure-devops = { project = "sunjayv/turtle", pipeline = "sunjay.turtle" }
+# Codecov: `repository` is required. `branch` is optional; default is `master`
+# `service` is optional; valid values are `github` (default), `bitbucket`, and `gitlab`.
+# codecov = { repository = "sunjay/turtle", branch = "master", service = "github" }
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+interpolation = "0.2"
+rand = "0.8"
+
+svg = "0.10"
+
+pathfinder_canvas = "0.5"
+# These versions must stay synced with the dependencies of pathfinder_canvas
+pathfinder_renderer = "0.5"
+pathfinder_resources = "0.5"
+pathfinder_color = "0.5"
+pathfinder_geometry = "0.5"
+pathfinder_gl = "0.5"
+glutin = "0.27"
+gl = "0.14"
+
+ipc-channel = "0.15"
+thiserror = "1.0"
+once_cell = "1.5"
+
+cfg-if = "1.0"
+
+parking_lot = "0.11"
+
+[dependencies.futures-util]
+version = "0.3"
+default-features = false
+features = [
+    "channel",
+]
+
+[dependencies.tokio]
+version = "0.2"
+default-features = false
+features = [
+    "process",
+    "io-std",
+    "io-util",
+    "rt-threaded",
+    "blocking",
+    "sync",
+    "stream",
+    "time",
+    "macros",
+]
+
+# Dependencies used when developing `turtle` directly, but not when using it as
+# a library.
+[dev-dependencies]
+bitvec = "0.22"
+chrono = "0.4"
+
+# Since the debug performance of turtle isn't all that great, we recommend that
+# every user of turtle add the following to their Cargo.toml
+#
+#     [profile.dev.package."*"]
+#     opt-level = 3
+#
+# This increases initial compile time a bit, but after that the library will
+# always work performantly even if the user's code itself is in debug mode still
+#
+# The following setting mimics that for the debug build of this crate.
+# We don't use `.package."*"` because the turtle crate *is* the package that
+# would be optimized with that setting in an application that uses this crate.
+[profile.dev]
+opt-level = 3
+
+[features]
+# The reason we do this is because doctests don't get cfg(test)
+# See: https://github.com/rust-lang/cargo/issues/4669
+#
+# This allows us to write attributes like the following and have it work
+# in all tests.
+#
+# #[cfg(any(feature = "test", test))]
+#
+# NOTE: This means that tests MUST be run with:
+#   cargo test --features "test"
+test = []
+
+# Feature flag to disable unstable features by default.
+#
+# Users of the crate must explicitly opt-in to activate them.
+unstable = []
